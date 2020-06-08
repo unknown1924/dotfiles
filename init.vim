@@ -21,19 +21,40 @@ call plug#begin('~/.local/share/nvim/site/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+"Plug 'sheerun/vim-polyglot'
+
+Plug 'alvan/vim-closetag'
+
+Plug 'turbio/bracey.vim'
+
 Plug 'preservim/nerdtree'
 
 Plug 'vim-airline/vim-airline'
 
 Plug 'ryanoasis/vim-devicons'
 
+Plug 'jiangmiao/auto-pairs'
+
+Plug 'mattn/emmet-vim'
+
+
+Plug 'tpope/vim-surround'
+
+Plug 'preservim/nerdcommenter'
+
+Plug 'vimwiki/vimwiki'
+
+Plug 'ap/vim-css-color'
+
+Plug 'maxmellon/vim-jsx-pretty'
+
+Plug 'honza/vim-snippets'
 call plug#end()
 
 "==================================================================
 "=========================| THEMES |==============================
 
-colorscheme molokai
-
+colorscheme gruvbox
 " Options:  gruvbox - light & dark both good
 "             dracula
 "             molokai
@@ -46,245 +67,301 @@ colorscheme molokai
 "             basic-light - light theme
 "             blackbeauty
 
-"set background=dark
+set background=dark
+highlight Comment cterm=italic
+"au ColorScheme * hi Normal ctermbg=none guibg=none
+au ColorScheme gruvbox hi Normal ctermbg=none guibg=none
 
 "............. Airline theme...............
 "let g:airline_theme='onedark'
 "let g:airline#extensions#wordcount#enabled = 0
 
+".................use coc-prettier in nvim..................
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+
 "=========================| CUSTOM |=============================
 ".................... custom mapping .................
-" Open new split panes to right and bottom, which feels more natural
-set splitbelow
-set splitright
-nnoremap ; :
-nnoremap : ;
+" tab navigation
+nnoremap H :tabprev<CR>
+nnoremap L :tabnext<CR>
 
-"....................moves visual blocks.......................
-".............. but use dragvisuals.vim instead ...................
-vnoremap K xkP`[V`]
-vnoremap J xjP`[V`]
-vnoremap L >gv
-vnoremap H <gv
+"................ Markdown ........................
+set conceallevel=2
 
-".................. Map <F5> to run code .....................
-autocmd filetype python nnoremap <F5> :w <bar> exec '!python '.shellescape('%')<CR>
-autocmd filetype c nnoremap <F5> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
-autocmd filetype cpp nnoremap <F5> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
-autocmd filetype javascript nnoremap <F5> :w <bar> exec '!node '.shellescape('%')<CR>
+ " Open new split panes to right and bottom, which feels more natural
+ set splitbelow
+ set splitright
+ nnoremap ; :
+ nnoremap : ;
 
-"................ Toggle relative and absolute number line .................
-augroup numbertoggle
-    autocmd!
-    autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-    autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
-augroup END
+ "....................moves visual blocks.......................
+ ".............. but use dragvisuals.vim instead ...................
+ vnoremap K xkP`[V`]
+ vnoremap J xjP`[V`]
+ vnoremap L >gv
+ vnoremap H <gv
 
-"............. open NERDTree if no file is opened ...............
-autocmd StdinReadPre * let s:std_in=1 
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+ ".................. Map <F5> to run code .....................
+ autocmd filetype python nnoremap <F5> :w <bar> exec '!python3 '.shellescape('%')<CR>
+ autocmd filetype c nnoremap <F5> :w <bar> exec '!gcc '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
+ autocmd filetype cpp nnoremap <F5> :w <bar> exec '!g++ '.shellescape('%').' -o '.shellescape('%:r').' && ./'.shellescape('%:r')<CR>
+ autocmd filetype javascript nnoremap <F5> :w <bar> exec '!node '.shellescape('%')<CR>
 
-"==================================================================
-"=========================| SETTINGS |=============================
-syntax on
-set encoding=utf-8
-set colorcolumn=80
-set nocompatible
-set number relativenumber
-set expandtab
-set belloff=all
-set tabstop=4 softtabstop=4
-set shiftwidth=4
-set smartindent
-set nowrap
-set autowrite     " Automatically :write before running commands
-set smartcase
-" set noswapfile
-" set nobackup
-"........... searching ...............
-set incsearch            " search as characters are entered
-set hlsearch             " highlight matches
-set cursorline           " highlight current line
-highlight ColorColumn ctermbg=0 guibg=lightgrey
-set showmatch            " highlight matching
-"setlocal spell spelllang=en_us
-filetype off
-filetype plugin on
-set viminfo='1000,f1,<500
-"======================================================================
-"==========================| MOVEMENTS |===============================
+ "................ Toggle relative and absolute number line .................
+ augroup numbertoggle
+     autocmd!
+     autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+     autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+ augroup END
 
-"............... K and J as up down by half keys ...........
-nnoremap <S-k> <C-u>
-nnoremap <S-j> <C-d>
-"................ Swtiching between panes ..................
+ "................. display doc if no diagnostic ..................
+ function! ShowDocIfNoDiagnostic(timer_id)
+     if (coc#util#has_float() == 0)
+         silent call CocActionAsync('doHover')
+     endif
+ endfunction
 
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
+ function! s:show_hover_doc()
+     call timer_start(1000, 'ShowDocIfNoDiagnostic')
+ endfunction
 
-"............... Move to beginning/end of a line............
-nnoremap B ^
-nnoremap E $
-"................ $/^ doesn't do anything.................
-nnoremap $ <nop>
-nnoremap ^ <nop>
+ autocmd CursorHoldI * :call <SID>show_hover_doc()
+ autocmd CursorHold * :call <SID>show_hover_doc()
 
-"==================================================================
-"================| PLUGIN-SPECIFIC-SETTINGS|=======================
+ "............. open NERDTree if no file is opened ...............
+ autocmd StdinReadPre * let s:std_in=1 
+ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-"............---------- NERDTree ------------.................
-map <C-n> ;NERDTreeToggle<CR>
-let NERDTreeMinimalUI=1
-let NERDTreeDirArrows = 1
+ "==================================================================
+ "=========================| SETTINGS |=============================
+ syntax on
+ set encoding=utf-8
+ set colorcolumn=80
+ set nocompatible
+ set number relativenumber
+ set expandtab
+ set belloff=all
+ set tabstop=4 softtabstop=4
+ set shiftwidth=4
+ set smartindent
+ set nowrap
+ set autowrite     " Automatically :write before running commands
+ set smartcase
+ " set noswapfile
+ " set nobackup
+ "........... searching ...............
+ set incsearch            " search as characters are entered
+ set hlsearch             " highlight matches
+ set cursorline           " highlight current line
+ highlight ColorColumn ctermbg=0 guibg=lightgrey
+ set showmatch            " highlight matching
+ "setlocal spell spelllang=en_us
+ filetype off
+ filetype plugin on
+ set viminfo='1000,f1,<500
+ "======================================================================
+ "==========================| MOVEMENTS |===============================
 
-"............... Toggle for split open in NERDTree................
-let g:NERDTreeMapOpenSplit = "s"
-let g:NERDTreeMapPreviewSplit = "gs"
-let g:NERDTreeMapOpenVSplit = "v"
-let g:NERDTreeMapPreviewVSplit = "gv"
+highlight Comment cterm=italic
+ "............... K and J as up down by half keys ...........
+ nnoremap <S-k> <C-u>
+ nnoremap <S-j> <C-d>
+ "................ Swtiching between panes ..................
 
-"............................... coc .....................................   
-" TextEdit might fail if hidden is not set.
-set hidden
+ nnoremap <C-J> <C-W><C-J>
+ nnoremap <C-K> <C-W><C-K>
+ nnoremap <C-L> <C-W><C-L>
+ nnoremap <C-H> <C-W><C-H>
 
-" Some servers have issues with backup files, see #649.
-set nobackup
-set nowritebackup
+ "............... Move to beginning/end of a line............
+ nnoremap B ^
+ nnoremap E $
+ "................ $/^ doesn't do anything.................
+ nnoremap $ <nop>
+ nnoremap ^ <nop>
 
-" Give more space for displaying messages.
-"set cmdheight=2
+ "==================================================================
+ "================| PLUGIN-SPECIFIC-SETTINGS|=======================
+ "............... emmet ................
+ let g:user_emmet_leader_key='<C-K>'
 
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
+ "............... coc extensions ................
+ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
+ "............---------- NERDTree ------------.................
+ map <C-n> ;NERDTreeToggle<CR>
+ let NERDTreeMinimalUI=1
+ let NERDTreeDirArrows = 1
 
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-set signcolumn=yes
+ "............... Toggle for split open in NERDTree................
+ let g:NERDTreeMapOpenSplit = "s"
+ let g:NERDTreeMapPreviewSplit = "gs"
+ let g:NERDTreeMapOpenVSplit = "v"
+ let g:NERDTreeMapPreviewVSplit = "gv"
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+ "............... vim-closetag ................
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+let g:closetag_filetypes = 'html,xhtml,phtml'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+let g:closetag_emptyTags_caseSensitive = 1
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ }
+let g:closetag_shortcut = '>'
+let g:closetag_close_shortcut = '<leader>>' 
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+ "............................... vimwiki .....................................   
+let g:vimwiki_list = [{'path':'~/vimwiki/', 'index':'index'}, {'path':'~/code/code_wiki/', 'index':'index'}] 
 
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
+" colors for header
+hi VimwikiHeader1 guifg=#FF0000
+hi VimwikiHeader2 guifg=#00FF00
+hi VimwikiHeader3 guifg=#0000FF
+hi VimwikiHeader4 guifg=#FF00FF
+hi VimwikiHeader5 guifg=#00FFFF
+hi VimwikiHeader6 guifg=#FFFF00
 
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position. Coc only does snippet and additional edit on confirm.
-" <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
+ "............................... coc .....................................   
+ " TextEdit might fail if hidden is not set.
+ set hidden
+ set nobackup
+ set nowritebackup
 
-" Use `[g` and `]g` to navigate diagnostics
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
+ " Give more space for displaying messages.
+ "set cmdheight=2
 
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+ " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+ " delays and poor user experience.
+ set updatetime=300
 
-" Use K to show documentation in preview window.
-nnoremap <silent> <leader>D :call <SID>show_documentation()<CR>
+ " Don't pass messages to |ins-completion-menu|.
+ set shortmess+=c
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+ " Always show the signcolumn, otherwise it would shift the text each time
+ " diagnostics appear/become resolved.
+ set signcolumn=yes
 
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+ " Use tab for trigger completion with characters ahead and navigate.
+ " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+ " other plugin before putting this into your config.
+ inoremap <silent><expr> <TAB>
+             \ pumvisible() ? "\<C-n>" :
+             \ <SID>check_back_space() ? "\<TAB>" :
+             \ coc#refresh()
+ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
+ function! s:check_back_space() abort
+     let col = col('.') - 1
+     return !col || getline('.')[col - 1]  =~# '\s'
+ endfunction
 
-" Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+ " Use <c-space> to trigger completion.
+ inoremap <silent><expr> <c-space> coc#refresh()
 
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
+ " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+ " position. Coc only does snippet and additional edit on confirm.
+ " <cr> could be remapped by other vim plugin, try `:verbose imap <CR>`.
+ if exists('*complete_info')
+     inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+ else
+     inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+ endif
 
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+ " Use `[g` and `]g` to navigate diagnostics
+ nmap <silent> [g <Plug>(coc-diagnostic-prev)
+ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" Remap keys for applying codeAction to the current line.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+ " GoTo code navigation.
+ nmap <silent> gd <Plug>(coc-definition)
+ nmap <silent> gy <Plug>(coc-type-definition)
+ nmap <silent> gi <Plug>(coc-implementation)
+ nmap <silent> gr <Plug>(coc-references)
 
-" Introduce function text object
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
+ " Use K to show documentation in preview window.
+ nnoremap <silent> <leader>D :call <SID>show_documentation()<CR>
 
-" Use <TAB> for selections ranges.
-" NOTE: Requires 'textDocument/selectionRange' support from the language server.
-" coc-tsserver, coc-python are the examples of servers that support it.
-nmap <silent> <TAB> <Plug>(coc-range-select)
-xmap <silent> <TAB> <Plug>(coc-range-select)
+ function! s:show_documentation()
+     if (index(['vim','help'], &filetype) >= 0)
+         execute 'h '.expand('<cword>')
+     else
+         call CocAction('doHover')
+     endif
+ endfunction
 
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
+ " Highlight the symbol and its references when holding the cursor.
+ autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+ " Symbol renaming.
+ nmap <leader>rn <Plug>(coc-rename)
 
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+ " Formatting selected code.
+ xmap <leader>f  <Plug>(coc-format-selected)
+ nmap <leader>f  <Plug>(coc-format-selected)
 
-" Add (Neo)Vim's native statusline support.
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+ augroup mygroup
+     autocmd!
+     " Setup formatexpr specified filetype(s).
+     autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+     " Update signature help on jump placeholder.
+     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+ augroup end
 
-" Mappings using CoCList:
-" Show all diagnostics.
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+ " Applying codeAction to the selected region.
+ " Example: `<leader>aap` for current paragraph
+ xmap <leader>a  <Plug>(coc-codeaction-selected)
+ nmap <leader>a  <Plug>(coc-codeaction-selected)
 
-"==============================================================================
+ " Remap keys for applying codeAction to the current line.
+ nmap <leader>ac  <Plug>(coc-codeaction)
+ " Apply AutoFix to problem on the current line.
+ nmap <leader>qf  <Plug>(coc-fix-current)
+
+ " Introduce function text object
+ " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+ xmap if <Plug>(coc-funcobj-i)
+ xmap af <Plug>(coc-funcobj-a)
+ omap if <Plug>(coc-funcobj-i)
+ omap af <Plug>(coc-funcobj-a)
+
+ " Use <TAB> for selections ranges.
+ " NOTE: Requires 'textDocument/selectionRange' support from the language server.
+ " coc-tsserver, coc-python are the examples of servers that support it.
+ nmap <silent> <TAB> <Plug>(coc-range-select)
+ xmap <silent> <TAB> <Plug>(coc-range-select)
+
+ " Add `:Format` command to format current buffer.
+ command! -nargs=0 Format :call CocAction('format')
+
+ " Add `:Fold` command to fold current buffer.
+ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+ " Add `:OR` command for organize imports of the current buffer.
+ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+ " Add (Neo)Vim's native statusline support.
+ " NOTE: Please see `:h coc-status` for integrations with external plugins that
+ " provide custom statusline: lightline.vim, vim-airline.
+ set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+ " Mappings using CoCList:
+ " Show all diagnostics.
+ nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+ " Manage extensions.
+ nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+ " Show commands.
+ nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+ " Find symbol of current document.
+ nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+ " Search workspace symbols.
+ nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+ " Do default action for next item.
+ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+ " Do default action for previous item.
+ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+ " Resume latest coc list.
+ nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+ "==============================================================================

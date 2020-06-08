@@ -21,65 +21,68 @@ set shell=zsh
 
 "=========================| PLUGINS |==============================
 call plug#begin('~/.vim/plugged')
-Plug 'airblade/vim-gitgutter'
 
 Plug 'morhetz/gruvbox'
 Plug 'dracula/vim'
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
+"Plug 'sonph/onehalf', {'rtp': 'vim/'}
 "Plug 'tomasr/molokai'
 Plug 'vim-airline/vim-airline'
 "Plug 'vim-airline/vim-airline-themes'
-Plug 'frazrepo/vim-rainbow'
-Plug 'flazz/vim-colorschemes'
+"Plug 'frazrepo/vim-rainbow'
+"Plug 'flazz/vim-colorschemes'
 
-Plug 'ycm-core/YouCompleteMe'
+"Plug 'ycm-core/YouCompleteMe'
 Plug 'dense-analysis/ale'
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-scripts/taglist.vim'
 
 Plug 'easymotion/vim-easymotion'
+Plug 'unblevable/quick-scope'
 Plug 'preservim/nerdcommenter'
-Plug 'metakirby5/codi.vim'
+"Plug 'metakirby5/codi.vim'
 "Plug 'kien/ctrlp.vim'
 
 Plug 'honza/vim-snippets'
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'tomtom/tlib_vim'
+"Plug 'MarcWeber/vim-addon-mw-utils'
+"Plug 'tomtom/tlib_vim'
 
-Plug 'garbas/vim-snipmate'
-Plug 'mbbill/undotree'
-Plug 'ervandew/supertab'
+"Plug 'garbas/vim-snipmate'
+"Plug 'mbbill/undotree'
+"Plug 'ervandew/supertab'
 
 
 Plug 'ap/vim-css-color'
-Plug 'othree/html5.vim'
-Plug 'pangloss/vim-javascript'
+"Plug 'othree/html5.vim'
+"Plug 'pangloss/vim-javascript'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'turbio/bracey.vim'
-Plug 'maxmellon/vim-jsx-pretty'
+"Plug 'maxmellon/vim-jsx-pretty'
 Plug 'mattn/emmet-vim'
-Plug 'ryanoasis/vim-devicons'
+"Plug 'ryanoasis/vim-devicons'
 
 
 Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 Plug 'alvan/vim-closetag'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+"Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 
 " Track the engine.
-Plug 'SirVer/ultisnips'
+"Plug 'SirVer/ultisnips'
 
 " Snippets are separated from the engine. Add this if you want them:
-Plug 'honza/vim-snippets'
+"Plug 'honza/vim-snippets'
 
 call plug#end()
 "==================================================================
 
-"=========================| THEMES |==============================
+"=========================| THEMES |===============================
 
-colorscheme dracula
+colorscheme gruvbox
 
+" atom    \_ support translucent bg
+" dracula /
 "// Options:  gruvbox - light & dark both good
 "             dracula
 "             molokai
@@ -98,9 +101,17 @@ set background=dark
 "let g:airline#extensions#wordcount#enabled = 0
 
 "==================================================================
-"=========================| CUSTOM |=============================
+"=========================| CUSTOM |===============================
 ".................... custom mapping .................
+" Tabs
+"nnoremap H gT
+"nnoremap L gt
+nnoremap H :tabprev<CR>
+nnoremap L :tabnext<CR>
 
+"nnoremap <C-Tab> :tabnext<CR>
+imap <C-Tab> <ESC>:tabnext<CR>
+imap <C-S-Tab> <ESC>:tabprevious<CR>
 " Termdebug
 let g:termdebug_popup = 0
 let g:termdebug_wide = 163
@@ -200,8 +211,8 @@ augroup numbertoggle
     autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
 augroup END
 
-"==================================================================
-"=========================| SETTINGS |=============================
+"==============================================================================
+"=============================| SETTINGS |=====================================
 syntax on
 
 set encoding=utf-8
@@ -222,7 +233,7 @@ set smartcase
 set incsearch            " search as characters are entered
 set hlsearch             " highlight matches
 set cursorline           " highlight current line
-highlight ColorColumn ctermbg=0 guibg=lightgrey
+"highlight ColorColumn ctermbg=0 guibg=lightgrey
 set wildmenu             " visual autocomplete for command menu
 set showmatch            " highlight matching
 "setlocal spell spelllang=en_us
@@ -236,13 +247,13 @@ set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.git
 "set listchars=tab:>~,nbsp:_,trail:.
 "set listchars=nbsp:_,trail:.
 "set list!
-"======================================================================
-"=========================| INDENTATION |==============================
+"==============================================================================
+"=============================| INDENTATION |==================================
 
 "au BufWrite * :Autoformat
 
-"======================================================================
-"==========================| MOVEMENTS |===============================
+"==============================================================================
+"================================| MOVEMENTS |=================================
 
 "............... K and J as up down by half keys ...........
 nnoremap <S-k> <C-u>
@@ -266,24 +277,24 @@ nnoremap <Leader>sp :setlocal spell spelllang=en_us<CR>
 nnoremap <Leader>nsp :set nospell<CR>
 au BufRead *.txt,*.md setlocal spell
 
-"==================================================================
+"==============================================================================
 
-"=========================| LEADER |==============================
+"=============================| LEADER |=======================================
 
 nnoremap <silent> <Leader>= :vertical resize +20<CR>
 nnoremap <silent> <Leader>- :vertical resize -20<CR>
 
 noremap <Space>w <leader><leader>w
 
-"==================================================================
+"==============================================================================
 
-"================| PLUGIN-SPECIFIC-SETTINGS|=======================
+"=======================| PLUGIN-SPECIFIC-SETTINGS|============================
 "
 "--------------------- vim gitgutter --------------------
-let g:gitgutter_enables = 1
-let g:gitgutter_map_keys = 0
-nmap ) <Plug>(GitGutterNextHunk)
-nmap ( <Plug>(GitGutterPrevHunk)
+"let g:gitgutter_enables = 1
+"let g:gitgutter_map_keys = 0
+"nmap ) <Plug>(GitGutterNextHunk)
+"nmap ( <Plug>(GitGutterPrevHunk)
 
 "--------------------- NERDTree git plugin --------------------
 let g:NERDTreeIndicatorMapCustom = {
