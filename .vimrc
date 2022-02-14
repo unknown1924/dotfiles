@@ -31,11 +31,11 @@ Plug 'vim-airline/vim-airline'
 "Plug 'frazrepo/vim-rainbow'
 "Plug 'flazz/vim-colorschemes'
 
-"Plug 'ycm-core/YouCompleteMe'
+Plug 'ycm-core/YouCompleteMe'
 Plug 'dense-analysis/ale'
 Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'vim-scripts/taglist.vim'
+"Plug 'vim-scripts/taglist.vim'
 
 Plug 'easymotion/vim-easymotion'
 Plug 'unblevable/quick-scope'
@@ -65,7 +65,7 @@ Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 Plug 'alvan/vim-closetag'
-"Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 
 
 " Track the engine.
@@ -141,7 +141,7 @@ nnoremap ]r :ALENextWrap<CR>
 nnoremap [r :ALEPreviousWrap<CR>
 " ................... Escape from inside brackets ............
 "inoremap <A-m> <C-o>A
-"inoremap m <C-o>A
+"inoremap m <C-o>A
 "inoremap <Space>l <C-o>A 
 nnoremap ; :
 nnoremap : ;
@@ -232,7 +232,7 @@ set smartcase
 "........... searching ...............
 set incsearch            " search as characters are entered
 set hlsearch             " highlight matches
-set cursorline           " highlight current line
+"set cursorline           " highlight current line
 "highlight ColorColumn ctermbg=0 guibg=lightgrey
 set wildmenu             " visual autocomplete for command menu
 set showmatch            " highlight matching
@@ -297,7 +297,7 @@ noremap <Space>w <leader><leader>w
 "nmap ( <Plug>(GitGutterPrevHunk)
 
 "--------------------- NERDTree git plugin --------------------
-let g:NERDTreeIndicatorMapCustom = {
+let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -387,4 +387,6 @@ let g:closetag_close_shortcut = '<leader>>'
 " <leader>cn -> comment forcing indentation
 " <leader>cs -> sexy comments
 " <leader>cu -> uncomment
+" <leader>cy -> yank then comment
+" <leader>c<space> -> toggle comment
 "==============================================================================
